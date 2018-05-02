@@ -1,0 +1,60 @@
+{
+  "name": "@xrps/fcm-token-registry",
+  "version": "0.1.0",
+  "description": "An HTTP web server for manage Firebase Cloud Messaging device tokens.",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "keywords": [
+    "fcm",
+    "device",
+    "token",
+    "registry",
+    "express",
+    "firebase",
+    "cloud",
+    "messaging",
+    "mongodb"
+  ],
+  "author": "Francis Brito <fr.br94@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xrps/fcm-token-registry.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xrps/fcm-token-registry/issues"
+  },
+  "homepage": "https://github.com/xrps/fcm-token-registry#readme",
+  "devDependencies": {
+    "ava": "1.0.0-beta.4",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "husky": "^1.0.0-rc.2",
+    "is-express-app": "^4.0.0",
+    "lint-staged": "^7.0.5",
+    "prettier-eslint": "^8.8.1",
+    "prettier-eslint-cli": "^4.7.1"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "is-main": "^0.2.0"
+  },
+  "ava": {
+    "babel": false
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier-eslint --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
+    }
+  }
+}

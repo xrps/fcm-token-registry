@@ -1,0 +1,11 @@
+language: node_js
+before_install: dpkg --compare-versions `npm -v` ge 5.8 || npm i -g npm@latest
+install:
+  - npm ci
+cache:
+  directories:
+    - "$HOME/.npm"
+node_js:
+  - "node"
+  - "8"
+  - "6"
