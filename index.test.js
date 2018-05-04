@@ -14,13 +14,14 @@ test('returns an express app factory', (t) => {
   t.true(isExpressApp(createTokenRegistry({ entryStorage: {} })));
 });
 
-test('allows retrieving all entries', async (t) => {
+test('allows retrieving all entries', (t) => {
   const expectedEntries = [
     { belongsTo: 'cecilia@xrps.co', token: 'foobarbazqnx' },
     { belongsTo: 'angelica@xrps.co', token: 'qux123456' },
   ];
   const entryStorage = createInMemoryEntryStorage({ entries: expectedEntries });
-  await supertest(createTokenRegistry({ entryStorage }))
+
+  return supertest(createTokenRegistry({ entryStorage }))
     .get(routes.ENTRIES)
     .expect(httpStatus.OK)
     .then((response) => {
@@ -28,7 +29,7 @@ test('allows retrieving all entries', async (t) => {
     });
 });
 
-test('allows retrieving all entries by a given group id', async (t) => {
+test('allows retrieving all entries by a given group id', (t) => {
   const entries = [
     { belongsTo: 'a@aaa.org', token: 'aaaaa' },
     { belongsTo: 'a@aaa.org', token: 'ahaha' },
@@ -42,7 +43,8 @@ test('allows retrieving all entries by a given group id', async (t) => {
   const urlForEntriesOfUser = pathToRegExp.compile(routes.ENTRIES_OF_GROUP)({
     groupId: 'a@aaa.org',
   });
-  await supertest(createTokenRegistry({ entryStorage }))
+
+  return supertest(createTokenRegistry({ entryStorage }))
     .get(urlForEntriesOfUser)
     .expect(httpStatus.OK)
     .then((response) => {
