@@ -4,7 +4,8 @@
   "description": "An HTTP web server for manage Firebase Cloud Messaging device tokens.",
   "main": "index.js",
   "scripts": {
-    "test": "ava"
+    "test": "ava",
+    "start": "node index"
   },
   "keywords": [
     "fcm",

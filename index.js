@@ -2,6 +2,8 @@ const express = require('express');
 const isMain = require('is-main');
 const httpStatus = require('http-status');
 
+const createInMemoryEntryStorage = require('./lib/adapters/in-memory-entry-storage');
+
 const routes = Object.freeze({
   ENTRIES: '/',
   ENTRIES_OF_GROUP: '/:groupId',
@@ -32,8 +34,9 @@ exports.routes = routes;
 
 if (isMain(module)) {
   const port = process.env.NODE_PORT || 3000;
+  const entryStorage = createInMemoryEntryStorage({ entries: [] });
 
-  factory().listen(port);
+  factory({ entryStorage }).listen(port);
 
   console.log(`listening at port ${port}`);
 }
