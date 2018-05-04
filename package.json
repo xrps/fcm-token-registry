@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "ava",
-    "start": "node index"
+    "start": "node index.js",
+    "watch-restart": "nodemon index.js"
   },
   "keywords": [
     "fcm",
@@ -49,10 +50,12 @@
     "http-status": "^1.1.0",
     "is-main": "^0.2.0",
     "joi": "^13.2.0",
+    "nodemon": "^1.17.3",
     "verror": "^1.10.0"
   },
   "ava": {
-    "babel": false
+    "babel": false,
+    "compileEnhancements": false
   },
   "lint-staged": {
     "*.js": [
