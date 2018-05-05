@@ -6,6 +6,7 @@ const pathToRegExp = require('path-to-regexp');
 
 const { factory: createTokenRegistry, routes } = require('./');
 const createInMemoryEntryStorage = require('./lib/adapters/in-memory-entry-storage');
+const { EntryValidationError } = require('./lib/errors');
 
 const isFunction = fn => typeof fn === 'function';
 
@@ -52,4 +53,46 @@ test('allows retrieving all entries by a given group id', (t) => {
     });
 });
 
-test.todo('allows registering a new entry to a given group id');
+test('allows registering a new entry to a given group id', (t) => {
+  const requestBody = { token: 'asdf1234token' };
+  const entryStorage = createInMemoryEntryStorage();
+  const expectedGroupId = 'someone';
+  const urlForEntriesOfUser = pathToRegExp.compile(routes.ENTRIES_OF_GROUP)({
+    groupId: expectedGroupId,
+  });
+
+  return supertest(createTokenRegistry({ entryStorage }))
+    .post(urlForEntriesOfUser)
+    .send(requestBody)
+    .expect(httpStatus.OK)
+    .then(() => entryStorage.getEntriesByGroupId(expectedGroupId))
+    .then((entries) => {
+      t.is(entries.length, 1);
+
+      const newEntry = entries[0];
+
+      t.is(newEntry.belongsTo, 'someone');
+      t.is(newEntry.token, requestBody.token);
+    });
+});
+
+test('returns an error when registering an invalid new entry', (t) => {
+  const entryStorage = createInMemoryEntryStorage();
+  const agent = supertest(createTokenRegistry({ entryStorage }));
+  const urlForEntriesOfUser = pathToRegExp.compile(routes.ENTRIES_OF_GROUP)({
+    groupId: 'my-group-id',
+  });
+  const assertions = [
+    {}, // missing token
+    { token: 'a'.repeat(1025) }, // token too long
+  ].map(invalidRequestBody =>
+    agent
+      .post(urlForEntriesOfUser)
+      .send(invalidRequestBody)
+      .expect(httpStatus.UNPROCESSABLE_ENTITY)
+      .then((response) => {
+        t.is(response.body.name, EntryValidationError.name);
+      }));
+
+  return Promise.all(assertions);
+});

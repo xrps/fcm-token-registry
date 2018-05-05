@@ -1,8 +1,10 @@
 const express = require('express');
 const isMain = require('is-main');
 const httpStatus = require('http-status');
+const bodyParser = require('body-parser');
 
 const createInMemoryEntryStorage = require('./lib/adapters/in-memory-entry-storage');
+const { EntryValidationError, GroupIdValidationError } = require('./lib/errors');
 
 const routes = Object.freeze({
   ENTRIES: '/',
@@ -24,6 +26,34 @@ function factory({ entryStorage }) {
       .getEntriesByGroupId(req.params.groupId)
       .then(entries => res.status(httpStatus.OK).json(entries))
       .catch(next);
+  });
+
+  app.post(routes.ENTRIES_OF_GROUP, bodyParser.json(), (req, res, next) => {
+    entryStorage
+      .saveEntry({ token: req.body.token, belongsTo: req.params.groupId })
+      .then(newEntry => res.status(httpStatus.OK).json(newEntry))
+      .catch((e) => {
+        next(e);
+      });
+  });
+
+  app.use((err, req, res, next) => {
+    const errorHandlers = {
+      [EntryValidationError.name]: () =>
+        res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+          name: err.name,
+          message: err.message,
+        }),
+      [GroupIdValidationError.name]: () =>
+        res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+          name: err.name,
+          message: err.message,
+        }),
+    };
+
+    const onError = errorHandlers[err.name] || next;
+
+    onError();
   });
 
   return app;
