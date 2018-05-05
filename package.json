@@ -1,10 +1,12 @@
 {
   "name": "@xrps/fcm-token-registry",
   "version": "0.1.0",
-  "description": "An HTTP web server for manage Firebase Cloud Messaging device tokens.",
+  "description": "An HTTP web server for managing Firebase Cloud Messaging device tokens.",
   "main": "index.js",
   "scripts": {
     "test": "ava",
+    "test-with-coverage": "nyc ava",
+    "test-with-coveralls": "nyc ava && nyc report --reporter=text-lcov | coveralls",
     "start": "node index.js",
     "watch-restart": "nodemon index.js"
   },
@@ -34,12 +36,14 @@
     "@types/joi": "^13.0.8",
     "@types/supertest": "^2.0.4",
     "ava": "1.0.0-beta.4",
+    "coveralls": "^3.0.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
     "husky": "^1.0.0-rc.2",
     "is-express-app": "^4.0.0",
     "lint-staged": "^7.0.5",
+    "nyc": "^11.7.1",
     "path-to-regexp": "^2.2.1",
     "prettier-eslint": "^8.8.1",
     "prettier-eslint-cli": "^4.7.1",

@@ -32,9 +32,7 @@ function factory({ entryStorage }) {
     entryStorage
       .saveEntry({ token: req.body.token, belongsTo: req.params.groupId })
       .then(newEntry => res.status(httpStatus.OK).json(newEntry))
-      .catch((e) => {
-        next(e);
-      });
+      .catch(next);
   });
 
   app.use((err, req, res, next) => {
