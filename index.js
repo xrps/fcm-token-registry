@@ -43,11 +43,6 @@ function factory({ entryStorage }) {
           name: err.name,
           message: err.message,
         }),
-      [GroupIdValidationError.name]: () =>
-        res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-          name: err.name,
-          message: err.message,
-        }),
     };
 
     const onError = errorHandlers[err.name] || next;
