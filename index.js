@@ -4,7 +4,7 @@ const httpStatus = require('http-status');
 const bodyParser = require('body-parser');
 
 const createInMemoryEntryStorage = require('./lib/adapters/in-memory-entry-storage');
-const { EntryValidationError, GroupIdValidationError } = require('./lib/errors');
+const { EntryValidationError } = require('./lib/errors');
 const { createEntryDto } = require('./lib/dtos');
 
 const routes = Object.freeze({
