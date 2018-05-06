@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const createInMemoryEntryStorage = require('./lib/adapters/in-memory-entry-storage');
 const { EntryValidationError, GroupIdValidationError } = require('./lib/errors');
+const { createEntryDto } = require('./lib/dtos');
 
 const routes = Object.freeze({
   ENTRIES: '/',
@@ -30,7 +31,7 @@ function factory({ entryStorage }) {
 
   app.post(routes.ENTRIES_OF_GROUP, bodyParser.json(), (req, res, next) => {
     entryStorage
-      .saveEntry({ token: req.body.token, belongsTo: req.params.groupId })
+      .saveEntry(createEntryDto({ token: req.body.token, belongsTo: req.params.groupId }))
       .then(newEntry => res.status(httpStatus.OK).json(newEntry))
       .catch(next);
   });
