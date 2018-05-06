@@ -34,6 +34,7 @@
   "devDependencies": {
     "@types/express": "^4.11.1",
     "@types/joi": "^13.0.8",
+    "@types/mongodb": "^3.0.18",
     "@types/supertest": "^2.0.4",
     "ava": "1.0.0-beta.4",
     "coveralls": "^3.0.1",
@@ -43,11 +44,14 @@
     "husky": "^1.0.0-rc.2",
     "is-express-app": "^4.0.0",
     "lint-staged": "^7.0.5",
+    "mongodb-memory-server": "^1.7.3",
     "nyc": "^11.7.1",
     "path-to-regexp": "^2.2.1",
     "prettier-eslint": "^8.8.1",
     "prettier-eslint-cli": "^4.7.1",
-    "supertest": "^3.0.0"
+    "sinon": "^5.0.4",
+    "supertest": "^3.0.0",
+    "uuid": "^3.2.1"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
@@ -55,6 +59,7 @@
     "http-status": "^1.1.0",
     "is-main": "^0.2.0",
     "joi": "^13.2.0",
+    "mongodb": "^3.0.7",
     "nodemon": "^1.17.3",
     "verror": "^1.10.0"
   },

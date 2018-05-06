@@ -10,3 +10,6 @@ node_js:
   - "8"
   - "6"
 script: npm run test-with-coveralls
+services:
+  - mongodb
+before_script: sleep 15
