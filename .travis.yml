@@ -13,3 +13,7 @@ script: npm run test-with-coveralls
 services:
   - mongodb
 before_script: sleep 15
+env:
+  - NODE_ENV=ci
+  - CI_DB_HOST=localhost
+  - CI_DB_PORT=27017
