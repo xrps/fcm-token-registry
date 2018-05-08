@@ -12,6 +12,7 @@ node_js:
 script: npm run test-with-coveralls
 services:
   - mongodb
+  - redis
 before_script: sleep 15
 env:
-  - NODE_ENV=ci CI_DB_HOST=localhost CI_DB_PORT=27017
+  - NODE_ENV=ci CI_DB_HOST=localhost CI_DB_PORT=27017 CI_REDIS_HOST=localhost CI_REDIS_PORT=6379

@@ -41,6 +41,7 @@
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
+    "get-port": "^3.2.0",
     "husky": "^1.0.0-rc.2",
     "is-express-app": "^4.0.0",
     "lint-staged": "^7.0.5",
@@ -49,11 +50,13 @@
     "path-to-regexp": "^2.2.1",
     "prettier-eslint": "^8.8.1",
     "prettier-eslint-cli": "^4.7.1",
+    "redis-server": "^1.2.0",
     "sinon": "^5.0.4",
     "supertest": "^3.0.0",
     "uuid": "^3.2.1"
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "http-status": "^1.1.0",
@@ -61,6 +64,7 @@
     "joi": "^13.2.0",
     "mongodb": "^3.0.7",
     "nodemon": "^1.17.3",
+    "redis": "^2.8.0",
     "verror": "^1.10.0"
   },
   "ava": {

@@ -96,3 +96,5 @@ test('returns an error when registering an invalid new entry', (t) => {
 
   return Promise.all(assertions);
 });
+
+test.todo('forwards an error to next handler if unable to handle it');
