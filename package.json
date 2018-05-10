@@ -65,6 +65,7 @@
     "mongodb": "^3.0.7",
     "nodemon": "^1.17.3",
     "redis": "^2.8.0",
+    "swagger-ui-dist": "^3.14.1",
     "verror": "^1.10.0"
   },
   "ava": {

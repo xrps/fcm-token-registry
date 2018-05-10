@@ -2,10 +2,12 @@ const express = require('express');
 const isMain = require('is-main');
 const httpStatus = require('http-status');
 const bodyParser = require('body-parser');
+const swaggerUiDist = require('swagger-ui-dist');
 
 const createInMemoryEntryStorage = require('./lib/adapters/in-memory-entry-storage');
 const { EntryValidationError } = require('./lib/errors');
 const { createEntryDto } = require('./lib/dtos');
+const swaggerDocument = require('./swagger.json');
 
 const routes = Object.freeze({
   ENTRIES: '/',
@@ -14,6 +16,19 @@ const routes = Object.freeze({
 
 function factory({ entryStorage }) {
   const app = express();
+
+  app.use('/_swagger', (req, res, next) => {
+    // NOTE: instruct swagger ui to load our swagger file.
+    // TODO: improve this.
+    if (req.url === '/' && req.query.url !== '/_swagger.json') {
+      res.redirect('/_swagger?url=/_swagger.json');
+
+      return;
+    }
+
+    express.static(swaggerUiDist.absolutePath())(req, res, next);
+  });
+  app.get('/_swagger.json', (req, res) => res.json(swaggerDocument));
 
   app.get(routes.ENTRIES, (req, res, next) => {
     entryStorage

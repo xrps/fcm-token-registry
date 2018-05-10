@@ -1,0 +1,132 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "A RESTful HTTP web service for managing Firebase Cloud Messassing device tokens.",
+    "version": "0.1.0",
+    "title": "FCM Token Registry"
+  },
+  "schemes": [
+    "http"
+  ],
+  "definitions": {
+    "Entry": {
+      "type": "object",
+      "required": [
+        "token",
+        "belongsTo"
+      ],
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "FCM device registration token",
+          "example": "Rj5xMuvL4rrWgVjd6SD6:Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6"
+        },
+        "belongsTo": {
+          "type": "string",
+          "description": "Group ID the device token was registered for",
+          "example": "cecilia@domain.co"
+        }
+      }
+    },
+    "EntryList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Entry"
+      }
+    }
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Get all entries",
+        "operationId": "getAllEntries",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of entries",
+            "schema": {
+              "$ref": "#/definitions/EntryList"
+            }
+          }
+        }
+      }
+    },
+    "/{groupId}": {
+      "get": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Get all entries for in a given group",
+        "operationId": "getEntriesByGroupId",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupId",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of entries",
+            "schema": {
+              "$ref": "#/definitions/EntryList"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "entries"
+        ],
+        "summary": "Add a new entry",
+        "operationId": "saveEntry",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupId",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "example": "Rj5xMuvL4rrWgVjd6SD6:Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6Rj5xMuvL4rrWgVjd6SD6"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entry saved",
+            "schema": {
+              "$ref": "#/definitions/Entry"
+            }
+          },
+          "422": {
+            "description": "Unable to process payload"
+          }
+        }
+      }
+    }
+  }
+}
