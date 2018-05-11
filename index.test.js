@@ -4,15 +4,16 @@ const supertest = require('supertest');
 const httpStatus = require('http-status');
 const pathToRegExp = require('path-to-regexp');
 
-const { factory: createTokenRegistry, routes } = require('./');
+const createRegistry = require('./lib/registry');
+const { factory: createWebService, routes } = require('./');
 const createInMemoryEntryStorage = require('./lib/adapters/in-memory-entry-storage');
 const { EntryValidationError } = require('./lib/errors');
 
 const isFunction = fn => typeof fn === 'function';
 
 test('returns an express app factory', (t) => {
-  t.true(isFunction(createTokenRegistry));
-  t.true(isExpressApp(createTokenRegistry({ entryStorage: {} })));
+  t.true(isFunction(createWebService));
+  t.true(isExpressApp(createWebService({ registry: {} })));
 });
 
 test('allows retrieving all entries', (t) => {
@@ -21,8 +22,9 @@ test('allows retrieving all entries', (t) => {
     { belongsTo: 'angelica@xrps.co', token: 'qux123456' },
   ];
   const entryStorage = createInMemoryEntryStorage({ entries: expectedEntries });
+  const registry = createRegistry({ entryStorage });
 
-  return supertest(createTokenRegistry({ entryStorage }))
+  return supertest(createWebService({ registry }))
     .get(routes.ENTRIES)
     .expect(httpStatus.OK)
     .then((response) => {
@@ -41,11 +43,12 @@ test('allows retrieving all entries by a given group id', (t) => {
     { belongsTo: 'a@aaa.org', token: 'ahaha' },
   ];
   const entryStorage = createInMemoryEntryStorage({ entries });
+  const registry = createRegistry({ entryStorage });
   const urlForEntriesOfUser = pathToRegExp.compile(routes.ENTRIES_OF_GROUP)({
     groupId: 'a@aaa.org',
   });
 
-  return supertest(createTokenRegistry({ entryStorage }))
+  return supertest(createWebService({ registry }))
     .get(urlForEntriesOfUser)
     .expect(httpStatus.OK)
     .then((response) => {
@@ -56,16 +59,17 @@ test('allows retrieving all entries by a given group id', (t) => {
 test('allows registering a new entry to a given group id', (t) => {
   const requestBody = { token: 'asdf1234token' };
   const entryStorage = createInMemoryEntryStorage();
+  const registry = createRegistry({ entryStorage });
   const expectedGroupId = 'someone';
   const urlForEntriesOfUser = pathToRegExp.compile(routes.ENTRIES_OF_GROUP)({
     groupId: expectedGroupId,
   });
 
-  return supertest(createTokenRegistry({ entryStorage }))
+  return supertest(createWebService({ registry }))
     .post(urlForEntriesOfUser)
     .send(requestBody)
     .expect(httpStatus.OK)
-    .then(() => entryStorage.getEntriesByGroupId(expectedGroupId))
+    .then(() => registry.getEntriesByGroupId(expectedGroupId))
     .then((entries) => {
       t.is(entries.length, 1);
 
@@ -78,7 +82,8 @@ test('allows registering a new entry to a given group id', (t) => {
 
 test('returns an error when registering an invalid new entry', (t) => {
   const entryStorage = createInMemoryEntryStorage();
-  const agent = supertest(createTokenRegistry({ entryStorage }));
+  const registry = createRegistry({ entryStorage });
+  const agent = supertest(createWebService({ registry }));
   const urlForEntriesOfUser = pathToRegExp.compile(routes.ENTRIES_OF_GROUP)({
     groupId: 'my-group-id',
   });
@@ -99,17 +104,18 @@ test('returns an error when registering an invalid new entry', (t) => {
 
 test('ignores operation if token is already registered by the same group id', (t) => {
   const entryStorage = createInMemoryEntryStorage();
-  const agent = supertest(createTokenRegistry({ entryStorage }));
+  const registry = createRegistry({ entryStorage });
+  const agent = supertest(createWebService({ registry }));
   const url = pathToRegExp.compile(routes.ENTRIES_OF_GROUP)({
     groupId: 'someone',
   });
 
-  return entryStorage.saveEntry({ token: 'asdf1234token', belongsTo: 'someone' }).then(() =>
+  return registry.saveEntry({ token: 'asdf1234token', belongsTo: 'someone' }).then(() =>
     agent
       .post(url)
       .send({ token: 'asdf1234token' })
       .expect(httpStatus.OK)
-      .then(() => entryStorage.getEntriesByGroupId('someone'))
+      .then(() => registry.getEntriesByGroupId('someone'))
       .then((entries) => {
         t.is(entries.length, 1);
         t.is(entries[0].token, 'asdf1234token');

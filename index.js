@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const swaggerUiDist = require('swagger-ui-dist');
 
 const { EntryValidationError } = require('./lib/errors');
-const { createEntryDto } = require('./lib/dtos');
 const swaggerDocument = require('./swagger.json');
 
 const routes = Object.freeze({
@@ -12,7 +11,7 @@ const routes = Object.freeze({
   ENTRIES_OF_GROUP: '/:groupId',
 });
 
-function factory({ entryStorage }) {
+function factory({ registry }) {
   const app = express();
 
   app.use('/_swagger', (req, res, next) => {
@@ -29,25 +28,25 @@ function factory({ entryStorage }) {
   app.get('/_swagger.json', (req, res) => res.json(swaggerDocument));
 
   app.get(routes.ENTRIES, (req, res, next) => {
-    entryStorage
+    registry
       .getAllEntries()
       .then(entries => res.status(httpStatus.OK).json(entries))
       .catch(next);
   });
 
   app.get(routes.ENTRIES_OF_GROUP, (req, res, next) => {
-    entryStorage
+    registry
       .getEntriesByGroupId(req.params.groupId)
       .then(entries => res.status(httpStatus.OK).json(entries))
       .catch(next);
   });
 
   app.post(routes.ENTRIES_OF_GROUP, bodyParser.json(), (req, res, next) => {
-    const entry = createEntryDto({ token: req.body.token, belongsTo: req.params.groupId });
+    const entry = { token: req.body.token, belongsTo: req.params.groupId };
 
-    entryStorage
+    registry
       .exists(entry)
-      .then(exists => (exists ? Promise.resolve(entry) : entryStorage.saveEntry(entry)))
+      .then(exists => (exists ? entry : registry.saveEntry(entry)))
       .then(newEntry => res.status(httpStatus.OK).json(newEntry))
       .catch(next);
   });
