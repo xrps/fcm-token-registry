@@ -43,24 +43,27 @@ function factory({ entryStorage }) {
   });
 
   app.post(routes.ENTRIES_OF_GROUP, bodyParser.json(), (req, res, next) => {
+    const entry = createEntryDto({ token: req.body.token, belongsTo: req.params.groupId });
+
     entryStorage
-      .saveEntry(createEntryDto({ token: req.body.token, belongsTo: req.params.groupId }))
+      .exists(entry)
+      .then(exists => (exists ? Promise.resolve(entry) : entryStorage.saveEntry(entry)))
       .then(newEntry => res.status(httpStatus.OK).json(newEntry))
       .catch(next);
   });
 
   app.use((err, req, res, next) => {
     const errorHandlers = {
-      [EntryValidationError.name]: () =>
+      [EntryValidationError.name]: e =>
         res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-          name: err.name,
-          message: err.message,
+          name: e.name,
+          message: e.message,
         }),
     };
 
     const onError = errorHandlers[err.name] || next;
 
-    onError();
+    onError(err);
   });
 
   return app;

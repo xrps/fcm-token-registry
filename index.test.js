@@ -97,4 +97,23 @@ test('returns an error when registering an invalid new entry', (t) => {
   return Promise.all(assertions);
 });
 
+test('ignores operation if token is already registered by the same group id', (t) => {
+  const entryStorage = createInMemoryEntryStorage();
+  const agent = supertest(createTokenRegistry({ entryStorage }));
+  const url = pathToRegExp.compile(routes.ENTRIES_OF_GROUP)({
+    groupId: 'someone',
+  });
+
+  return entryStorage.saveEntry({ token: 'asdf1234token', belongsTo: 'someone' }).then(() =>
+    agent
+      .post(url)
+      .send({ token: 'asdf1234token' })
+      .expect(httpStatus.OK)
+      .then(() => entryStorage.getEntriesByGroupId('someone'))
+      .then((entries) => {
+        t.is(entries.length, 1);
+        t.is(entries[0].token, 'asdf1234token');
+      }));
+});
+
 test.todo('forwards an error to next handler if unable to handle it');
