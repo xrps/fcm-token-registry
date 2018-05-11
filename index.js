@@ -1,10 +1,8 @@
 const express = require('express');
-const isMain = require('is-main');
 const httpStatus = require('http-status');
 const bodyParser = require('body-parser');
 const swaggerUiDist = require('swagger-ui-dist');
 
-const createInMemoryEntryStorage = require('./lib/adapters/in-memory-entry-storage');
 const { EntryValidationError } = require('./lib/errors');
 const { createEntryDto } = require('./lib/dtos');
 const swaggerDocument = require('./swagger.json');
@@ -70,12 +68,3 @@ function factory({ entryStorage }) {
 
 exports.factory = factory;
 exports.routes = routes;
-
-if (isMain(module)) {
-  const port = process.env.NODE_PORT || 3000;
-  const entryStorage = createInMemoryEntryStorage({ entries: [] });
-
-  factory({ entryStorage }).listen(port);
-
-  console.log(`listening at port ${port}`);
-}

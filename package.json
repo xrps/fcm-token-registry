@@ -7,8 +7,8 @@
     "test": "ava",
     "test-with-coverage": "nyc ava",
     "test-with-coveralls": "nyc ava && nyc report --reporter=text-lcov | coveralls",
-    "start": "node index.js",
-    "watch-restart": "nodemon index.js"
+    "start": "node lib/scripts/start",
+    "watch-restart": "nodemon lib/scripts/start"
   },
   "keywords": [
     "fcm",
