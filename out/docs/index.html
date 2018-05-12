@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>FCM Token Registry</h1><p><a href="https://travis-ci.org/xrps/fcm-token-registry"><img src="https://img.shields.io/travis/xrps/fcm-token-registry.svg?style=flat-square" alt="Build status"></a><a href="https://coveralls.io/github/xrps/fcm-token-registry?branch=master"><img src="https://img.shields.io/coveralls/github/xrps/fcm-token-registry.svg?style=flat-square" alt="Code coverage status"></a></p>
+<blockquote>
+<p>An HTTP web server for managing Firebase Cloud Messaging device tokens.</p>
+</blockquote>
+<pre class="prettyprint source lang-js"><code>const createInMemoryStorage = require('@xrps/fcm-token-registry/lib/adapters/in-memory-entry-storage');
+const createRegistry = require('@xrps/fcm-token-registry/lib/registry');
+const { factory: createApi } = require('@xrps/fcm-token-registry');
+
+const storage = createInMemoryStorage({ entries: [] });
+const registry = createRegistry({ storage });
+const api = createApi({ registry });
+
+api.listen(3000);</code></pre><h2>Features</h2><ul>
+<li><em>Minimalist</em>. Exposes a small set of endpoints.</li>
+<li><em>Extensible</em>. New functionally can be added by injecting <code>express</code> middleware.</li>
+<li><em>Convenient</em>. Can be ran as an HTTP server or <code>use</code>-d as an express middleware.</li>
+<li><em>Flexible</em>. Can be used as a whole or in parts.</li>
+</ul>
+<h2>Installation</h2><pre class="prettyprint source lang-sh"><code>$ npm install @xrps/fcm-token-registry</code></pre><h2>Usage</h2><p>As a standalone server:</p>
+<pre class="prettyprint source lang-js"><code>const mongodb = require('mongodb');
+
+const { factory: createMongoDbStorage } = require('@xrps/fcm-token-registry/lib/adapters/mongodb-entry-storage');
+const createRegistry = require('@xrps/fcm-token-registry/lib/registry');
+const { factory: createApi } = require('@xrps/fcm-token-registry');
+
+const dbUri = 'mongodb://localhost:27017';
+const dbName = 'fcm-registry';
+
+function start() {
+  // assumes mongodb@3.x
+  return mongodb.MongoClient
+    .connect(dbUri)
+    .then((dbClient) => {
+      const db = dbClient.db(dbName);
+      const entryStorage = createMongoDbStorage({ db });
+      const registry = createRegistry({ entryStorage });
+      const api = createApi({ registry });
+
+      const server = api.listen(3000);
+
+      server.on('listening', () => {
+        console.log('listening for incoming connections at port 3000');
+      });
+    });
+}
+
+start();
+  .catch(e => console.error(e));</code></pre><p>As an middleware for express:</p>
+<pre class="prettyprint source lang-js"><code>const express = require('express')
+
+const createInMemoryFcmTokenStorage = require('@xrps/fcm-token-registry/lib/adapters/in-memory-entry-storage');
+const createFcmTokenRegistry = require('@xrps/fcm-token-registry/lib/registry');
+const { factory: createFcmTokenRegistryApi } = require('@xprs/fcm-token-registry');
+
+const app = express();
+const fcmTokenRegistryApi = createFcmTokenRegistryApi({ entryStorage: createInMemoryFcmTokenStorage() });
+
+// ... do usual, express-related stuff, then
+
+app.use('/device-tokens', fcmTokenRegistryApi);
+
+// ... more express stuff
+
+app.listen(3000);</code></pre><p>Only certain parts:</p>
+<pre class="prettyprint source lang-js"><code>/**
+ * Suppose you'd like to be able to print all tokens assigned to a given user email (group ID) in the command-line.
+ */
+const userEmail = process.argv[1];
+
+function start() {
+  // assumes mongodb@3.x
+  return mongodb.MongoClient
+    .connect(dbUri)
+    .then((dbClient) => {
+      const db = dbClient.db(dbName);
+      const entryStorage = createMongoDbStorage({ db });
+      const registry = createRegistry({ entryStorage });
+
+      return registry
+        .getEntriesByGroupId(userEmail)
+        .then((entries) => entries.forEach(({ token }) => console.log(token)));
+    });
+}
+
+start()
+  .catch(e => console.error(e));</code></pre><h2>API</h2><p>Coming soon.</p>
+<h2>Examples</h2><p>Coming soon.</p>
+<h2>Road-map</h2><p>Coming soon.</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-adapters_in-memory-entry-storage.html">adapters/in-memory-entry-storage</a></li><li><a href="module-adapters_mongodb-entry-storage.html">adapters/mongodb-entry-storage</a></li><li><a href="module-adapters_redis-entry-storage.html">adapters/redis-entry-storage</a></li><li><a href="module-dtos.html">dtos</a></li><li><a href="module-errors.html">errors</a></li><li><a href="module-index.html">index</a></li><li><a href="module-registry.html">registry</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat May 12 2018 13:38:54 GMT-0400 (AST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
