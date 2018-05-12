@@ -8,7 +8,8 @@
     "test-with-coverage": "nyc ava",
     "test-with-coveralls": "nyc ava && nyc report --reporter=text-lcov | coveralls",
     "start": "node lib/scripts/start",
-    "watch-restart": "nodemon lib/scripts/start"
+    "watch-restart": "nodemon lib/scripts/start",
+    "generate-docs": "jsdoc --readme README.md --recurse --package package.json {index,lib/**/*}.js"
   },
   "keywords": [
     "fcm",
@@ -44,6 +45,7 @@
     "get-port": "^3.2.0",
     "husky": "^1.0.0-rc.2",
     "is-express-app": "^4.0.0",
+    "jsdoc": "^3.5.5",
     "lint-staged": "^7.0.5",
     "mongodb-memory-server": "^1.7.3",
     "nyc": "^11.7.1",

@@ -1,3 +1,7 @@
+/**
+ * @module index
+ * @see module:registry
+ */
 const express = require('express');
 const httpStatus = require('http-status');
 const bodyParser = require('body-parser');
@@ -6,6 +10,10 @@ const swaggerUiDist = require('swagger-ui-dist');
 const { EntryValidationError } = require('./lib/errors');
 const swaggerDocument = require('./swagger.json');
 
+/**
+ * A _frozen_ hash storing the endpoints exposed by the web API.
+ * @type {Object}
+ */
 const routes = Object.freeze({
   ENTRIES: '/',
   ENTRIES_OF_GROUP: '/:groupId',
@@ -13,6 +21,12 @@ const routes = Object.freeze({
   API_SPEC_JSON: '/_swagger.json',
 });
 
+/**
+ * Creates a new FCM token registry web API.
+ * @param  {Object} context
+ * @param  {Registry} context.registry
+ * @return {express.Express}
+ */
 function factory({ registry }) {
   const app = express();
 
