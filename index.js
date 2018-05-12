@@ -42,11 +42,8 @@ function factory({ registry }) {
   });
 
   app.post(routes.ENTRIES_OF_GROUP, bodyParser.json(), (req, res, next) => {
-    const entry = { token: req.body.token, belongsTo: req.params.groupId };
-
     registry
-      .exists(entry)
-      .then(exists => (exists ? entry : registry.saveEntry(entry)))
+      .saveEntry({ token: req.body.token, belongsTo: req.params.groupId })
       .then(newEntry => res.status(httpStatus.OK).json(newEntry))
       .catch(next);
   });
