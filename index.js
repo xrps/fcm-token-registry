@@ -9,23 +9,25 @@ const swaggerDocument = require('./swagger.json');
 const routes = Object.freeze({
   ENTRIES: '/',
   ENTRIES_OF_GROUP: '/:groupId',
+  API_SPEC: '/_swagger',
+  API_SPEC_JSON: '/_swagger.json',
 });
 
 function factory({ registry }) {
   const app = express();
 
-  app.use('/_swagger', (req, res, next) => {
+  app.use(routes.API_SPEC, (req, res, next) => {
     // NOTE: instruct swagger ui to load our swagger file.
     // TODO: improve this.
-    if (req.url === '/' && req.query.url !== '/_swagger.json') {
-      res.redirect('/_swagger?url=/_swagger.json');
+    if (req.url === '/' && req.query.url !== routes.API_SPEC_JSON) {
+      res.redirect(`${routes.API_SPEC}?url=${routes.API_SPEC_JSON}`);
 
       return;
     }
 
     express.static(swaggerUiDist.absolutePath())(req, res, next);
   });
-  app.get('/_swagger.json', (req, res) => res.json(swaggerDocument));
+  app.get(routes.API_SPEC_JSON, (req, res) => res.json(swaggerDocument));
 
   app.get(routes.ENTRIES, (req, res, next) => {
     registry
