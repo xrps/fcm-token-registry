@@ -108,7 +108,7 @@ start()
 
 ## API
 
-Coming soon.
+API documentation is hosted [here](https://xrps.github.io/fcm-token-registry/).
 
 ## Examples
 

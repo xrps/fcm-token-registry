@@ -9,7 +9,8 @@
     "test-with-coveralls": "nyc ava && nyc report --reporter=text-lcov | coveralls",
     "start": "node lib/scripts/start",
     "watch-restart": "nodemon lib/scripts/start",
-    "generate-docs": "jsdoc --readme README.md --recurse --package package.json {index,lib/**/*}.js"
+    "generate-docs": "jsdoc --readme README.md --recurse --package package.json {index,lib/**/*}.js",
+    "publish-docs": "gh-pages -d ./out/docs -s './**/*.*' -o upstream"
   },
   "keywords": [
     "fcm",
